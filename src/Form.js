@@ -6,7 +6,7 @@ import { Button, TextField } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import useInput from "./hooks/use-input";
 
-const Form = () => {
+const Form = (props) => {
   const {
     date: enteredDate,
     // isValid: enteredDateIsValid,
@@ -28,9 +28,19 @@ const Form = () => {
     console.log(enteredDate.toLocaleString());
     console.log(enteredHours, " hours");
 
-    const DateTime;
-    newDate = enteredDate.minus(enteredHours);
-    console.log(newDate);
+    let { DateTime}  = require("luxon");
+    let testDate = DateTime.fromISO(enteredDate).minus({hours:enteredHours});
+    const resultDate = testDate.toLocaleString({ month: 'long', day: 'numeric',year:"numeric" });
+    const resultDay =  testDate.toLocaleString({ weekday: 'long' });
+    const resultTime = testDate.toLocaleString(DateTime.TIME_SIMPLE); 
+    
+    // console.log(testDate.toString());
+    // console.log("get tested on: ", resultDate);
+    // console.log("get tested on: ", resultDay);
+    // console.log("get tested on: ", resultTime);
+
+    props.data(resultDate, resultDay, resultTime);
+
   };
 
   return (
@@ -55,7 +65,7 @@ const Form = () => {
             onChange={hoursChange}
             onBlur={hoursBlurHandler}
           />
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="contained" >
             Calculate
           </Button>
         </Stack>
