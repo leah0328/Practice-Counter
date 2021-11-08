@@ -1,14 +1,15 @@
 import { Fragment } from "react";
-import {Typography } from '@mui/material';
+import {Stack, Typography } from '@mui/material';
 
 const Result = (props) => {
     return(
         <Fragment>
-            <Typography variant="h5">Result</Typography>
-            <Typography variant="h6">You should get tested on:</Typography>
-            <Typography variant="h6">{props.resultDate}</Typography>
-            <Typography variant="h6">{props.resultDay}</Typography>
-            <Typography variant="h6" >{props.resultTime}</Typography>
+            <Stack spacing={3}>
+            <Typography variant="h6">Result</Typography>
+            <Typography variant="h7">You should get tested on:</Typography>
+            <Typography variant="h7">{props.resultDate} {props.resultDay}</Typography>
+            <Typography variant="h7">{props.resultTime}</Typography>
+            </Stack>
         </Fragment>
     );
 };

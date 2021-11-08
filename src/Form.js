@@ -1,8 +1,7 @@
 import { DateTimePicker } from "@mui/lab";
 import DateAdapter from "@mui/lab/AdapterLuxon";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import { Button, TextField } from "@mui/material";
-// import { useState } from "react";
+import { Button, TextField, Typography } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import useInput from "./hooks/use-input";
 
@@ -29,10 +28,11 @@ const Form = (props) => {
     console.log(enteredHours, " hours");
 
     let { DateTime}  = require("luxon");
+    let format = {...DateTime.TIME_SIMPLE, hourCycle:"h12"};
     let testDate = DateTime.fromISO(enteredDate).minus({hours:enteredHours});
     const resultDate = testDate.toLocaleString({ month: 'long', day: 'numeric',year:"numeric" });
     const resultDay =  testDate.toLocaleString({ weekday: 'long' });
-    const resultTime = testDate.toLocaleString(DateTime.TIME_SIMPLE); 
+    const resultTime = testDate.toLocaleString(format); 
     
     // console.log(testDate.toString());
     // console.log("get tested on: ", resultDate);
@@ -45,9 +45,12 @@ const Form = (props) => {
 
   return (
     <div>
-      <p>The Input Form</p>
+      
+      
       <form onSubmit={submitHandler}>
-        <Stack spacing={3}>
+      <Stack spacing={3}>
+        <Typography variant="h6">The Input Form</Typography>
+        
           <LocalizationProvider dateAdapter={DateAdapter}>
             <DateTimePicker
               label="Depature Date / Time"
