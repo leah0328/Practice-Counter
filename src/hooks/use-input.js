@@ -3,7 +3,7 @@ import { useState } from "react";
 const useInput = () => {
   const [enteredHours, setEnteredHours] = useState("");
   const [enteredDate, setEnteredDate] = useState(new Date());
-  const [isTouched, setisTouched] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
 
   const valueIsValid = enteredHours && enteredDate !== "";
   const hasError = !valueIsValid && isTouched;
@@ -16,10 +16,15 @@ const useInput = () => {
     setEnteredDate(enteredDate);
   };
 
-  const inputBlurHanfdler = () => {
-    setisTouched(true);
+  const inputBlurHandler = () => {
+    setIsTouched(true);
   };
 
+  const inputResetHandler = () => {
+    setEnteredDate("");
+    setEnteredHours("");
+    setIsTouched(false);
+  };
   //    const reset = () => {
   //        setEnteredValue("");
   //        setisTouched(false);
@@ -32,7 +37,8 @@ const useInput = () => {
     hasError,
     hoursChangeHandler,
     dateChangeHandler,
-    inputBlurHanfdler,
+    inputBlurHandler,
+    inputResetHandler
   };
 };
 
