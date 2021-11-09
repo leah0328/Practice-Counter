@@ -2,43 +2,44 @@ import { useState } from "react";
 
 const useInput = () => {
   const [enteredHours, setEnteredHours] = useState("");
-  const [enteredDate, setEnteredDate] = useState(new Date());
+  const [enteredDate, setEnteredDate] = useState(null);
   const [isTouched, setIsTouched] = useState(false);
 
-  const valueIsValid = enteredHours && enteredDate !== "";
-  const hasError = !valueIsValid && isTouched;
+  const hoursIsValid = enteredHours.trim() !== "";
+  const dateIsValid = enteredDate !== "";
+
+  const hoursHasError = !hoursIsValid && isTouched;
+  const dateHasError = !dateIsValid && isTouched;
 
   const hoursChangeHandler = (event) => {
     setEnteredHours(event.target.value);
   };
 
-  const dateChangeHandler = (enteredDate) => {
-    setEnteredDate(enteredDate);
+  const dateChangeHandler = (newDate) => {
+    setEnteredDate(newDate);
   };
 
-  const inputBlurHandler = () => {
+  const inputBlurHandler = (event) => {
     setIsTouched(true);
   };
 
-  const inputResetHandler = () => {
-    setEnteredDate("");
-    setEnteredHours("");
+  const reset = () => {
     setIsTouched(false);
+    setEnteredDate(null);
+    setEnteredHours("");
   };
-  //    const reset = () => {
-  //        setEnteredValue("");
-  //        setisTouched(false);
-  //    };
 
   return {
     hours: enteredHours,
     date: enteredDate,
-    isValid: valueIsValid,
-    hasError,
+    hoursIsValid,
+    dateIsValid,
+    hoursHasError,
+    dateHasError,
     hoursChangeHandler,
     dateChangeHandler,
     inputBlurHandler,
-    inputResetHandler
+    reset,
   };
 };
 

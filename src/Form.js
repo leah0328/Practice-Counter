@@ -1,82 +1,92 @@
-import { DateTimePicker } from "@mui/lab";
+import { MobileDateTimePicker } from "@mui/lab";
 import DateAdapter from "@mui/lab/AdapterLuxon";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { Button, TextField, Typography } from "@mui/material";
 import Stack from "@mui/material/Stack";
-import InputAdornment from '@mui/material/InputAdornment';
+import InputAdornment from "@mui/material/InputAdornment";
 import useInput from "./hooks/use-input";
 
 const Form = (props) => {
   const {
     date: enteredDate,
-    isValid: enteredDateIsValid,
-    hasError: enteredDateHasError,
+    dateIsValid: enteredDateIsValid,
+    dateHasError: enteredDateHasError,
     dateChangeHandler: dateChange,
     inputBlurHandler: dateBlurHandler,
-    inputResetHandler: dateResetHandler
+    reset: dateReset,
   } = useInput();
 
   const {
     hours: enteredHours,
-    isValid: enteredHoursIsValid,
-    hasError: enteredHoursHasError,
+    hoursIsValid: enteredHoursIsValid,
+    hourHasError: enteredHoursHasError,
     hoursChangeHandler: hoursChange,
     inputBlurHandler: hoursBlurHandler,
-    inputResetHandler: hoursResetHandler
+    reset: hoursReset,
   } = useInput();
 
+  let formIsValid = false;
+  if (enteredDateIsValid && enteredHoursIsValid) {
+    formIsValid = true;
+  }
 
-   
   const resetHandler = () => {
-    dateResetHandler();
-    hoursResetHandler();
+    dateReset();
+    hoursReset();
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
-    console.log(enteredDate.toLocaleString());
+
+    if (!formIsValid) {
+      return;
+    }
+
+    console.log(enteredDate);
     console.log(enteredHours);
 
-    let formIsValid;
-    if (enteredDateIsValid && enteredHoursIsValid)
-    formIsValid = true; 
+    let { DateTime } = require("luxon");
+    let format = { ...DateTime.TIME_SIMPLE, hourCycle: "h12" };
+    let testDate = DateTime.fromISO(enteredDate).minus({ hours: enteredHours });
+    const resultDate = testDate.toLocaleString({
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    const resultDay = testDate.toLocaleString({ weekday: "long" });
+    const resultTime = testDate.toLocaleString(format);
 
-    if (!formIsValid)
-    return;
-
-    let { DateTime }  = require("luxon");
-    let format = {...DateTime.TIME_SIMPLE, hourCycle:"h12"};
-    let testDate = DateTime.fromISO(enteredDate).minus({hours:enteredHours});
-    const resultDate = testDate.toLocaleString({ month: 'long', day: 'numeric',year:"numeric" });
-    const resultDay =  testDate.toLocaleString({ weekday: 'long' });
-    const resultTime = testDate.toLocaleString(format); 
-    
     // console.log(testDate.toString());
     // console.log("get tested on: ", resultDate);
     // console.log("get tested on: ", resultDay);
     // console.log("get tested on: ", resultTime);
 
     props.data(resultDate, resultDay, resultTime);
-
   };
-
 
   return (
     <div>
       <form onSubmit={submitHandler}>
-      <Stack spacing={3}>
-        <Typography variant="h6">Your Travel Details</Typography>
+        <Stack spacing={3}>
+          <Typography variant="h6">Your Travel Details</Typography>
           <LocalizationProvider dateAdapter={DateAdapter}>
-            <DateTimePicker
+            <MobileDateTimePicker
+              clearable
               label="Depature Date / Time"
               value={enteredDate}
               onChange={dateChange}
               onBlur={dateBlurHandler}
-              error={enteredDateHasError}
+              inputFormat="dd/MM/yyyy hh:mm a"
               helperText="Please enter a depature date and time"
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => (
+                <TextField {...params}  />
+              )}
             />
           </LocalizationProvider>
+          {enteredDateHasError && (
+              <Typography variant="body1">Depature Date and Time must not be empty</Typography>
+            )}
+
           <TextField
             id="hours"
             label="Interval"
@@ -84,13 +94,17 @@ const Form = (props) => {
             value={enteredHours}
             onChange={hoursChange}
             onBlur={hoursBlurHandler}
-            error={enteredHoursHasError}
             InputProps={{
-              endAdornment: <InputAdornment position="end">hours</InputAdornment>,
+              endAdornment: (
+                <InputAdornment position="end">hours</InputAdornment>
+              ),
             }}
             helperText="Please enter the hours you are required to undergo the PCR test before the travel, eg. 24, 72"
           />
-          <Button type="submit" variant="contained" >
+          {enteredHoursHasError && (
+              <Typography variant="body1">Interval must not be empty</Typography>
+            )}
+          <Button type="submit" variant="contained">
             Calculate
           </Button>
           <Button variant="contained" onClick={resetHandler}>
