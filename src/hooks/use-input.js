@@ -6,7 +6,7 @@ const useInput = () => {
   const [isTouched, setIsTouched] = useState(false);
 
   const hoursIsValid = enteredHours.trim() !== "";
-  const dateIsValid = enteredDate !== "";
+  const dateIsValid = enteredDate !== null;
 
   const hoursHasError = !hoursIsValid && isTouched;
   const dateHasError = !dateIsValid && isTouched;

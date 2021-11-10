@@ -31,9 +31,16 @@ const Form = (props) => {
   }
 
   const resetHandler = () => {
-    dateReset();
-    hoursReset();
+     dateReset();
+     hoursReset();
+
+    const clearedDate = "";
+    const clearedDay = "";
+    const clearedTime = "";
+    
+    props.reset(clearedDate, clearedDay, clearedTime);
   };
+
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -56,31 +63,26 @@ const Form = (props) => {
     const resultDay = testDate.toLocaleString({ weekday: "long" });
     const resultTime = testDate.toLocaleString(format);
 
-    // console.log(testDate.toString());
-    // console.log("get tested on: ", resultDate);
-    // console.log("get tested on: ", resultDay);
-    // console.log("get tested on: ", resultTime);
-
+   
     props.data(resultDate, resultDay, resultTime);
   };
 
+  
   return (
     <div>
       <form onSubmit={submitHandler}>
-        <Stack spacing={3}>
+        <Stack spacing={5}>
           <Typography variant="h6">Your Travel Details</Typography>
           <LocalizationProvider dateAdapter={DateAdapter}>
             <MobileDateTimePicker
               clearable
+              required
               label="Depature Date / Time"
               value={enteredDate}
               onChange={dateChange}
               onBlur={dateBlurHandler}
               inputFormat="dd/MM/yyyy hh:mm a"
-              helperText="Please enter a depature date and time"
-              renderInput={(params) => (
-                <TextField {...params}  />
-              )}
+              renderInput={(params) => <TextField {...params} required helperText="Please enter your flight/cruise departure date and time"/>}
             />
           </LocalizationProvider>
           {enteredDateHasError && (
@@ -88,6 +90,7 @@ const Form = (props) => {
             )}
 
           <TextField
+            required
             id="hours"
             label="Interval"
             type="number"
@@ -101,13 +104,14 @@ const Form = (props) => {
             }}
             helperText="Please enter the hours you are required to undergo the PCR test before the travel, eg. 24, 72"
           />
-          {enteredHoursHasError && (
-              <Typography variant="body1">Interval must not be empty</Typography>
+           {enteredHoursHasError && (
+              <Typography variant="body1">Depature Date and Time must not be empty</Typography>
             )}
+
           <Button type="submit" variant="contained">
             Calculate
           </Button>
-          <Button variant="contained" onClick={resetHandler}>
+          <Button onClick={resetHandler}>
             Reset
           </Button>
         </Stack>
